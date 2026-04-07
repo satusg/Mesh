@@ -14,9 +14,23 @@ export function createApp(
   webhookController: WebhookController,
 ): express.Application {
   const app = express()
+  const allowedOrigins = (process.env.CORS_ORIGIN ?? 'http://localhost:5174')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean)
 
   // ─── Global middleware ────────────────────────────────────────────────────
-  app.use(cors({ origin: process.env.CORS_ORIGIN ?? 'http://localhost:5174' }))
+  app.use(cors({
+    origin: (origin, callback) => {
+      // Allow server-to-server requests and configured frontend origins.
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true)
+        return
+      }
+
+      callback(null, false)
+    },
+  }))
 
   // Webhook routes must receive the raw body — register BEFORE express.json()
   app.use('/api/webhooks', createWebhookRouter(webhookController))
