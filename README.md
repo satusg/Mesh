@@ -28,6 +28,7 @@ Create a Render Blueprint or Web Service from this repository and use the backen
 Set these backend environment variables:
 
 - `NODE_ENV=production`
+- `ENABLE_CLIENT_PAYMENT_CONFIRMATION=true`
 - `LICENSE_SECRET=<long-random-secret>`
 - `MESH_CLIENT_ID=<your-mesh-client-id>`
 - `MESH_CLIENT_SECRET=<your-mesh-client-secret>`

@@ -48,6 +48,35 @@ export function useCheckout() {
     [store],
   )
 
+  const finalizePayment = useCallback(
+    async () => {
+      if (!store.orderId) return
+
+      const { orderId, gatewayReference } = store
+      store.setLoading(true)
+      store.setError(null)
+
+      if (gatewayReference) {
+        try {
+          await api.completePayment(orderId, { gatewayReference })
+        } catch (err) {
+          console.warn('[Checkout] Client-side payment completion failed; falling back to order polling.', err)
+        }
+      }
+
+      try {
+        const order = await api.getOrder(orderId)
+        store.setOrderStatus(order.status, order.licenseKey)
+      } catch (err) {
+        console.warn('[Checkout] Failed to fetch finalized order state before redirect.', err)
+      } finally {
+        store.setLoading(false)
+        navigate(`/confirmation/${orderId}`)
+      }
+    },
+    [store, navigate],
+  )
+
   const pollOrderStatus = useCallback(
     (orderId: string) => {
       let attempts = 0
@@ -81,6 +110,7 @@ export function useCheckout() {
     ...store,
     submitCustomerDetails,
     initiatePayment,
+    finalizePayment,
     pollOrderStatus,
   }
 }

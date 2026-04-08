@@ -4,6 +4,9 @@ services:
     runtime: node
     plan: free
     rootDir: backend
+    envVars:
+      - key: ENABLE_CLIENT_PAYMENT_CONFIRMATION
+        value: "true"
     buildCommand: npm install && npm run build
     startCommand: npm run start
     healthCheckPath: /health

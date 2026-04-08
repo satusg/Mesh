@@ -20,11 +20,11 @@ export function CheckoutForm() {
     error,
     submitCustomerDetails,
     initiatePayment,
-    pollOrderStatus,
+    finalizePayment,
     setError,
   } = useCheckout()
 
-  const [paymentSuccess, setPaymentSuccess] = useState(false)
+  const [isFinalizing, setIsFinalizing] = useState(false)
 
   useEffect(() => {
     if (orderId && !meshLinkToken) {
@@ -32,12 +32,17 @@ export function CheckoutForm() {
     }
   }, [orderId]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handlePaymentSuccess = () => {
-    setPaymentSuccess(true)
-    if (orderId) pollOrderStatus(orderId)
+  const handlePaymentSuccess = async () => {
+    if (!orderId) {
+      setError('Order not found. Please restart checkout.')
+      return
+    }
+
+    setIsFinalizing(true)
+    await finalizePayment()
   }
 
-  if (paymentSuccess) {
+  if (isFinalizing) {
     return (
       <div className="flex flex-col items-center gap-4 py-12 text-center">
         <Spinner size="lg" label="Processing your payment…" />
