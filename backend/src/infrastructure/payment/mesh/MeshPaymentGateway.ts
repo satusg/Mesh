@@ -127,7 +127,7 @@ export class MeshPaymentGateway implements IPaymentGateway {
 
   verifyWebhookSignature(payload: Buffer, signature: string): void {
     if (!signature) {
-      console.warn('[MeshGateway] No webhook signature provided — skipping verification')
+      console.warn('[Backend] [MeshGateway] No webhook signature provided - skipping verification')
       return
     }
 

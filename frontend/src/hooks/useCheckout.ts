@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCheckoutStore } from '@/store/checkoutStore'
 import { api } from '@/services/api'
+import { frontendLogger } from '@/services/logger'
 import type { CustomerFormValues, OrderView, PaymentMethod } from '@/types'
 
 const PRODUCT_ID = import.meta.env.VITE_PRODUCT_ID ?? 'a1b2c3d4-0000-0000-0000-000000000001'
@@ -22,6 +23,11 @@ export function useCheckout() {
           customer:  { email: values.email, fullName: values.fullName },
         })
         store.setOrderCreated(result.orderId, PRODUCT_ID, values.email, values.fullName)
+        frontendLogger.info('Order created', result.orderId, {
+          email: values.email,
+          customerName: values.fullName,
+          productId: PRODUCT_ID,
+        })
       } catch (err) {
         store.setError(err instanceof Error ? err.message : 'Failed to create order')
       } finally {
@@ -39,6 +45,11 @@ export function useCheckout() {
       try {
         const result = await api.initiatePayment(store.orderId, { method })
         store.setPaymentInitiated(result.linkToken, result.gatewayReference)
+        frontendLogger.info('Payment initiated', store.orderId, {
+          method,
+          gatewayReference: result.gatewayReference,
+          hasLinkToken: Boolean(result.linkToken),
+        })
       } catch (err) {
         store.setError(err instanceof Error ? err.message : 'Failed to initiate payment')
       } finally {
@@ -59,8 +70,12 @@ export function useCheckout() {
       if (gatewayReference) {
         try {
           await api.completePayment(orderId, { gatewayReference })
+          frontendLogger.info('Client-side payment completion requested', orderId, { gatewayReference })
         } catch (err) {
-          console.warn('[Checkout] Client-side payment completion failed; falling back to order polling.', err)
+          frontendLogger.warn('Client-side payment completion failed; falling back to order polling.', orderId, {
+            gatewayReference,
+            error: err instanceof Error ? err.message : String(err),
+          })
         }
       }
 
@@ -68,7 +83,9 @@ export function useCheckout() {
         const order = await api.getOrder(orderId)
         store.setOrderStatus(order.status, order.licenseKey)
       } catch (err) {
-        console.warn('[Checkout] Failed to fetch finalized order state before redirect.', err)
+        frontendLogger.warn('Failed to fetch finalized order state before redirect.', orderId, {
+          error: err instanceof Error ? err.message : String(err),
+        })
       } finally {
         store.setLoading(false)
         navigate(`/confirmation/${orderId}`)

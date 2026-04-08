@@ -139,6 +139,7 @@ export function BackofficePage() {
               <tr>
                 <th className="px-4 py-3 font-medium text-gray-500">Time</th>
                 <th className="px-4 py-3 font-medium text-gray-500">Order</th>
+                <th className="px-4 py-3 font-medium text-gray-500">Source</th>
                 <th className="px-4 py-3 font-medium text-gray-500">Event</th>
                 <th className="px-4 py-3 font-medium text-gray-500">Details</th>
               </tr>
@@ -146,13 +147,13 @@ export function BackofficePage() {
             <tbody className="divide-y divide-gray-100">
               {loading && events.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-4 py-12 text-center text-gray-400">
+                  <td colSpan={5} className="px-4 py-12 text-center text-gray-400">
                     Loading…
                   </td>
                 </tr>
               ) : events.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-4 py-12 text-center">
+                  <td colSpan={5} className="px-4 py-12 text-center">
                     <p className="text-gray-400">No events found</p>
                     <p className="mt-1 text-xs text-gray-300">
                       Events appear here as orders are created and processed.
@@ -216,6 +217,9 @@ function EventRow({
           </button>
         </td>
         <td className="px-4 py-3">
+          <SourceBadge event={event} />
+        </td>
+        <td className="px-4 py-3">
           <EventBadge type={event.eventType} />
         </td>
         <td className="max-w-xs truncate px-4 py-3 text-xs text-gray-500">
@@ -224,7 +228,7 @@ function EventRow({
       </tr>
       {expanded && event.detail && (
         <tr className="bg-gray-50">
-          <td colSpan={4} className="px-4 py-3">
+          <td colSpan={5} className="px-4 py-3">
             <pre className="overflow-x-auto rounded-lg bg-gray-900 p-3 text-xs text-gray-200">
               {JSON.stringify(event.detail, null, 2)}
             </pre>
@@ -232,6 +236,19 @@ function EventRow({
         </tr>
       )}
     </>
+  )
+}
+
+function SourceBadge({ event }: { event: OrderEvent }) {
+  const source = event.detail?.source === 'frontend' ? 'frontend' : 'backend'
+  const color = source === 'frontend'
+    ? 'bg-sky-100 text-sky-700'
+    : 'bg-stone-200 text-stone-700'
+
+  return (
+    <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${color}`}>
+      {source}
+    </span>
   )
 }
 

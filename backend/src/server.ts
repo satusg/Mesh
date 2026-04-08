@@ -8,6 +8,6 @@ const { orderController, productController, webhookController, eventController }
 const app = createApp(orderController, productController, webhookController, eventController)
 
 app.listen(PORT, () => {
-  console.log(`[USDC Coin API] Listening on http://localhost:${PORT}`)
-  console.log(`[USDC Coin API] Health: http://localhost:${PORT}/health`)
+  console.log(`[Backend] [USDC Coin API] Listening on http://localhost:${PORT}`)
+  console.log(`[Backend] [USDC Coin API] Health: http://localhost:${PORT}/health`)
 })

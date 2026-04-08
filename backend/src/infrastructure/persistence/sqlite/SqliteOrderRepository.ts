@@ -103,6 +103,7 @@ export class SqliteOrderRepository implements IOrderRepository {
           order_id: order.orderId.value,
           event_type: 'OrderCreated',
           detail: JSON.stringify({
+            source: 'backend',
             customerId: order.customer.customerId.value,
             email: order.customer.email.toString(),
             customerName: order.customer.fullName,
@@ -118,7 +119,7 @@ export class SqliteOrderRepository implements IOrderRepository {
       insertEvent.run({
         order_id: order.orderId.value,
         event_type: `StatusChanged:${order.status}`,
-        detail: JSON.stringify({ status: order.status }),
+        detail: JSON.stringify({ source: 'backend', status: order.status }),
       })
 
       // Flush domain events into the event log
@@ -126,7 +127,7 @@ export class SqliteOrderRepository implements IOrderRepository {
         insertEvent.run({
           order_id: order.orderId.value,
           event_type: event.eventName,
-          detail: JSON.stringify(event),
+          detail: JSON.stringify({ source: 'backend', ...event }),
         })
       }
     })

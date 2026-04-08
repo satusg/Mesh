@@ -1,14 +1,16 @@
 import { useEffect, useRef } from 'react'
 import { createLink } from '@meshconnect/web-link-sdk'
 import type { Link } from '@meshconnect/web-link-sdk'
+import { frontendLogger } from '@/services/logger'
 
 interface MeshPayButtonProps {
   linkToken: string
+  orderId: string
   onSuccess(): void
   onError(message: string): void
 }
 
-export function MeshPayButton({ linkToken, onSuccess, onError }: MeshPayButtonProps) {
+export function MeshPayButton({ linkToken, orderId, onSuccess, onError }: MeshPayButtonProps) {
   const meshRef = useRef<Link | null>(null)
 
   const ensureLink = () => {
@@ -29,11 +31,11 @@ export function MeshPayButton({ linkToken, onSuccess, onError }: MeshPayButtonPr
           clientId,
 
           onIntegrationConnected: (payload) => {
-            console.info('[Mesh] Integration connected:', payload)
+            frontendLogger.info('Mesh integration connected', orderId, payload)
           },
 
           onTransferFinished: (payload) => {
-            console.info('[Mesh] Transfer finished:', payload)
+            frontendLogger.info('Mesh transfer finished', orderId, payload)
             if ('errorMessage' in payload && payload.errorMessage) {
               onError(payload.errorMessage as string)
             } else {
@@ -42,12 +44,12 @@ export function MeshPayButton({ linkToken, onSuccess, onError }: MeshPayButtonPr
           },
 
           onExit: (error, summary) => {
-            console.info('[Mesh] Exit', { error, summary })
+            frontendLogger.info('Mesh link exited', orderId, { error, summary })
             if (error) onError(error)
           },
 
           onEvent: (event) => {
-            console.debug('[Mesh] Event:', event)
+            frontendLogger.debug('Mesh event received', orderId, event)
           },
         })
       } catch (err) {

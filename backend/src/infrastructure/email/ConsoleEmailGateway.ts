@@ -8,12 +8,12 @@ import { Order } from '../../domain/order/Order'
  */
 export class ConsoleEmailGateway implements IEmailGateway {
   async sendOrderConfirmation(to: Email, order: Order, licenseKey: string): Promise<void> {
-    console.log('─'.repeat(60))
-    console.log(`[Email] Order confirmation → ${to.value}`)
-    console.log(`  Order ID:    ${order.orderId.value}`)
-    console.log(`  Product:     ${order.product.name}`)
-    console.log(`  Amount:      $${order.total.formatted} ${order.total.currency}`)
-    console.log(`  License key: ${licenseKey}`)
-    console.log('─'.repeat(60))
+    console.log(`[Backend] ${'─'.repeat(60)}`)
+    console.log(`[Backend] [Email] Order confirmation -> ${to.value}`)
+    console.log(`[Backend]   Order ID:    ${order.orderId.value}`)
+    console.log(`[Backend]   Product:     ${order.product.name}`)
+    console.log(`[Backend]   Amount:      $${order.total.formatted} ${order.total.currency}`)
+    console.log(`[Backend]   License key: ${licenseKey}`)
+    console.log(`[Backend] ${'─'.repeat(60)}`)
   }
 }

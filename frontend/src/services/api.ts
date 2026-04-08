@@ -61,6 +61,10 @@ export const api = {
   getCustomerEvents(email: string): Promise<{ events: OrderEvent[] }> {
     return http.get('/api/events/customer', { params: { email } }).then((r) => r.data)
   },
+
+  logClientEvent(body: ClientLogRequest): Promise<void> {
+    return http.post('/api/events', body).then(() => undefined)
+  },
 }
 
 export interface OrderEvent {
@@ -69,4 +73,10 @@ export interface OrderEvent {
   eventType: string
   detail: Record<string, unknown> | null
   createdAt: string
+}
+
+export interface ClientLogRequest {
+  orderId: string
+  eventType: string
+  detail?: Record<string, unknown>
 }

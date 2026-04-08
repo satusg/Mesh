@@ -85,6 +85,7 @@ export function CheckoutForm() {
         {orderId && !isLoading && meshLinkToken && (
           <MeshPayButton
             linkToken={meshLinkToken}
+            orderId={orderId}
             onSuccess={handlePaymentSuccess}
             onError={(msg) => setError(msg)}
           />

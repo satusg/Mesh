@@ -37,7 +37,7 @@ export class ConfirmPaymentUseCase {
 
       this.emailGateway
         .sendOrderConfirmation(order.customer.email, order, licenseKey)
-        .catch((err) => console.error('[EmailGateway] Failed to send confirmation:', err))
+        .catch((err) => console.error('[Backend] [EmailGateway] Failed to send confirmation:', err))
 
     } else if (event.type === 'payment.failed') {
       if (order.status === OrderStatus.FAILED) return

@@ -8,6 +8,8 @@ export interface OrderEvent {
   createdAt: string
 }
 
+export type OrderEventSource = 'frontend' | 'backend'
+
 interface OrderEventRow {
   id: number
   order_id: string
@@ -19,10 +21,15 @@ interface OrderEventRow {
 export class OrderEventStore {
   constructor(private readonly db: Database.Database) {}
 
-  log(orderId: string, eventType: string, detail?: Record<string, unknown>): void {
+  log(
+    orderId: string,
+    eventType: string,
+    detail?: Record<string, unknown>,
+    source: OrderEventSource = 'backend',
+  ): void {
     this.db.prepare(
       'INSERT INTO order_events (order_id, event_type, detail) VALUES (?, ?, ?)',
-    ).run(orderId, eventType, detail ? JSON.stringify(detail) : null)
+    ).run(orderId, eventType, JSON.stringify({ ...(detail ?? {}), source }))
   }
 
   findByOrderId(orderId: string): OrderEvent[] {
