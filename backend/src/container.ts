@@ -68,7 +68,7 @@ export function buildContainer() {
   // ─── Controllers ─────────────────────────────────────────────────────────
   const orderController   = new OrderController(createOrder, getOrder, initiatePayment, completePayment)
   const productController = new ProductController(productRepo)
-  const webhookController = new WebhookController(confirmPayment)
+  const webhookController = new WebhookController(confirmPayment, eventStore)
   const eventController   = new EventController(eventStore)
 
   return { orderController, productController, webhookController, eventController }

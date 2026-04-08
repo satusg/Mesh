@@ -125,11 +125,21 @@ export class MeshPaymentGateway implements IPaymentGateway {
 
   // ─── Webhook ──────────────────────────────────────────────────────────────
 
-  verifyWebhookSignature(_payload: Buffer, _signature: string): void {
-    // Mesh webhook verification uses the client secret.
-    // In production: validate the X-Mesh-Signature header (HMAC-SHA256 of payload).
-    // For now, we log and proceed — replace with real verification before going live.
-    console.info('[MeshGateway] Webhook signature verification: implement before production')
+  verifyWebhookSignature(payload: Buffer, signature: string): void {
+    if (!signature) {
+      console.warn('[MeshGateway] No webhook signature provided — skipping verification')
+      return
+    }
+
+    const crypto = require('crypto') as typeof import('crypto')
+    const expected = crypto
+      .createHmac('sha256', this.clientSecret)
+      .update(payload)
+      .digest('hex')
+
+    if (signature !== expected) {
+      throw new Error('Invalid webhook signature')
+    }
   }
 
   async parseWebhookEvent(payload: Buffer): Promise<WebhookEvent> {
