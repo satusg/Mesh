@@ -49,4 +49,24 @@ export const api = {
   getOrder(orderId: string): Promise<OrderView> {
     return http.get<OrderView>(`/api/orders/${orderId}`).then((r) => r.data)
   },
+
+  getRecentEvents(): Promise<{ events: OrderEvent[] }> {
+    return http.get('/api/events/recent').then((r) => r.data)
+  },
+
+  getOrderEvents(orderId: string): Promise<{ events: OrderEvent[] }> {
+    return http.get(`/api/events/order/${orderId}`).then((r) => r.data)
+  },
+
+  getCustomerEvents(email: string): Promise<{ events: OrderEvent[] }> {
+    return http.get('/api/events/customer', { params: { email } }).then((r) => r.data)
+  },
+}
+
+export interface OrderEvent {
+  id: number
+  orderId: string
+  eventType: string
+  detail: Record<string, unknown> | null
+  createdAt: string
 }

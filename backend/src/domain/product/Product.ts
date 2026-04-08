@@ -18,6 +18,10 @@ export class Product {
     return new Product(props)
   }
 
+  static reconstitute(props: ProductProps): Product {
+    return new Product(props)
+  }
+
   get productId(): ProductId     { return this.props.productId }
   get name(): string             { return this.props.name }
   get tagline(): string          { return this.props.tagline }

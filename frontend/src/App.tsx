@@ -4,6 +4,7 @@ import { Footer } from '@/components/layout/Footer'
 import { LandingPage } from '@/pages/LandingPage'
 import { CheckoutPage } from '@/pages/CheckoutPage'
 import { ConfirmationPage } from '@/pages/ConfirmationPage'
+import { BackofficePage } from '@/pages/BackofficePage'
 
 export function App() {
   return (
@@ -16,6 +17,7 @@ export function App() {
             <Route path="/"                      element={<LandingPage />} />
             <Route path="/checkout"              element={<CheckoutPage />} />
             <Route path="/confirmation/:orderId" element={<ConfirmationPage />} />
+            <Route path="/backoffice"            element={<BackofficePage />} />
           </Routes>
         </div>
 

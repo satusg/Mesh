@@ -20,6 +20,9 @@ pnpm-debug.log*
 .env.*
 !.env.example
 
+# Database
+data/
+
 # Local editor and agent state
 .DS_Store
 .claude/
