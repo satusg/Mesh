@@ -81,26 +81,24 @@ export function BackofficePage() {
   const lastEvent = events[0]?.createdAt
 
   return (
-    <main className="min-h-screen bg-[#f7f8fb] px-4 py-8 sm:px-6">
+    <main className="min-h-screen px-4 py-10 sm:px-6 sm:py-14">
       <div className="mx-auto max-w-6xl space-y-6">
-        {/* Header */}
         <div className="flex items-end justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">Backoffice</h1>
-            <p className="mt-1 text-sm text-gray-500">Order events and activity log</p>
+            <h1 className="text-5xl text-white">Backoffice</h1>
+            <p className="mt-3 text-sm leading-7 text-slate-400">Order events and activity log</p>
           </div>
-          <label className="flex items-center gap-2 text-sm text-gray-600">
+          <label className="flex items-center gap-2 text-sm text-slate-400">
             <input
               type="checkbox"
               checked={autoRefresh}
               onChange={(e) => setAutoRefresh(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300"
+              className="h-4 w-4 rounded border-white/15 bg-transparent"
             />
             Auto-refresh
           </label>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-3 gap-4">
           <StatCard label="Events" value={events.length} />
           <StatCard label="Orders" value={uniqueOrders} />
@@ -110,7 +108,6 @@ export function BackofficePage() {
           />
         </div>
 
-        {/* Search */}
         <form onSubmit={handleSearch} className="flex flex-wrap gap-3">
           <select
             value={searchType}
@@ -118,7 +115,7 @@ export function BackofficePage() {
               setSearchType(e.target.value as 'recent' | 'order' | 'email')
               if (e.target.value === 'recent') setSearch('')
             }}
-            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm"
+            className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-slate-200"
           >
             <option value="recent">Recent events</option>
             <option value="order">By order ID</option>
@@ -131,13 +128,13 @@ export function BackofficePage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={searchType === 'order' ? 'Order ID…' : 'Email address…'}
-              className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm"
+              className="min-w-0 flex-1 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-500"
             />
           )}
 
           <button
             type="submit"
-            className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
+            className="rounded-full bg-white/[0.08] px-4 py-2.5 text-sm font-medium text-white hover:bg-white/[0.12]"
           >
             Search
           </button>
@@ -146,7 +143,7 @@ export function BackofficePage() {
             <button
               type="button"
               onClick={() => { setSearchType('recent'); setSearch('') }}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
+              className="rounded-full border border-white/10 bg-transparent px-4 py-2.5 text-sm font-medium text-slate-300 hover:bg-white/[0.05]"
             >
               Clear
             </button>
@@ -163,35 +160,34 @@ export function BackofficePage() {
         </form>
 
         {error && (
-          <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p className="rounded-3xl border border-red-400/25 bg-red-400/10 px-4 py-3 text-sm text-red-200">
             {error}
           </p>
         )}
 
-        {/* Table */}
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-[2rem] border border-white/8 bg-white/[0.03] shadow-[0_0_60px_rgba(86,125,255,0.06)] backdrop-blur-sm">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-gray-200 bg-gray-50">
+            <thead className="border-b border-white/8 bg-white/[0.02]">
               <tr>
-                <th className="px-4 py-3 font-medium text-gray-500">Time</th>
-                <th className="px-4 py-3 font-medium text-gray-500">Order</th>
-                <th className="px-4 py-3 font-medium text-gray-500">Source</th>
-                <th className="px-4 py-3 font-medium text-gray-500">Event</th>
-                <th className="px-4 py-3 font-medium text-gray-500">Details</th>
+                <th className="px-4 py-4 font-medium text-slate-500">Time</th>
+                <th className="px-4 py-4 font-medium text-slate-500">Order</th>
+                <th className="px-4 py-4 font-medium text-slate-500">Source</th>
+                <th className="px-4 py-4 font-medium text-slate-500">Event</th>
+                <th className="px-4 py-4 font-medium text-slate-500">Details</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-white/6">
               {loading && events.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-12 text-center text-gray-400">
+                  <td colSpan={5} className="px-4 py-12 text-center text-slate-500">
                     Loading…
                   </td>
                 </tr>
               ) : events.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-4 py-12 text-center">
-                    <p className="text-gray-400">No events found</p>
-                    <p className="mt-1 text-xs text-gray-300">
+                    <p className="text-slate-400">No events found</p>
+                    <p className="mt-1 text-xs text-slate-600">
                       Events appear here as orders are created and processed.
                     </p>
                   </td>
@@ -217,9 +213,9 @@ export function BackofficePage() {
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm">
-      <p className="text-xs font-medium text-gray-400">{label}</p>
-      <p className="mt-1 text-lg font-semibold text-gray-900">{value}</p>
+    <div className="rounded-[1.5rem] border border-white/8 bg-white/[0.03] px-4 py-4 backdrop-blur-sm">
+      <p className="text-xs font-medium uppercase tracking-[0.22em] text-slate-500">{label}</p>
+      <p className="mt-2 text-lg font-semibold text-white">{value}</p>
     </div>
   )
 }
@@ -238,16 +234,16 @@ function EventRow({
   return (
     <>
       <tr
-        className="cursor-pointer hover:bg-gray-50"
+        className="cursor-pointer hover:bg-white/[0.03]"
         onClick={onToggle}
       >
-        <td className="whitespace-nowrap px-4 py-3 text-xs text-gray-500">
+        <td className="whitespace-nowrap px-4 py-3 text-xs text-slate-500">
           {timeAgo(event.createdAt)}
         </td>
         <td className="px-4 py-3">
           <button
             onClick={(e) => { e.stopPropagation(); onDrillDown(event.orderId) }}
-            className="font-mono text-xs text-blue-600 hover:underline"
+            className="font-mono text-xs text-[#9dd6ff] hover:underline"
           >
             {event.orderId.slice(0, 8)}…
           </button>
@@ -258,14 +254,14 @@ function EventRow({
         <td className="px-4 py-3">
           <EventBadge type={event.eventType} />
         </td>
-        <td className="max-w-xs truncate px-4 py-3 text-xs text-gray-500">
+        <td className="max-w-xs truncate px-4 py-3 text-xs text-slate-400">
           {event.detail ? formatDetail(event.detail) : '—'}
         </td>
       </tr>
       {expanded && event.detail && (
-        <tr className="bg-gray-50">
+        <tr className="bg-white/[0.02]">
           <td colSpan={5} className="px-4 py-3">
-            <pre className="overflow-x-auto rounded-lg bg-gray-900 p-3 text-xs text-gray-200">
+            <pre className="overflow-x-auto rounded-2xl bg-[#050816] p-3 text-xs text-slate-300">
               {JSON.stringify(event.detail, null, 2)}
             </pre>
           </td>
@@ -278,8 +274,8 @@ function EventRow({
 function SourceBadge({ event }: { event: OrderEvent }) {
   const source = event.detail?.source === 'frontend' ? 'frontend' : 'backend'
   const color = source === 'frontend'
-    ? 'bg-sky-100 text-sky-700'
-    : 'bg-stone-200 text-stone-700'
+    ? 'bg-[#9dd6ff]/12 text-[#9dd6ff]'
+    : 'bg-white/[0.07] text-slate-300'
 
   return (
     <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${color}`}>
@@ -289,12 +285,12 @@ function SourceBadge({ event }: { event: OrderEvent }) {
 }
 
 function EventBadge({ type }: { type: string }) {
-  let color = 'bg-gray-100 text-gray-700'
-  if (type.includes('Created')) color = 'bg-blue-100 text-blue-700'
-  else if (type.includes('AWAITING') || type.includes('PENDING')) color = 'bg-yellow-100 text-yellow-700'
-  else if (type.includes('Paid') || type.includes('PAID')) color = 'bg-green-100 text-green-700'
-  else if (type.includes('Fulfilled') || type.includes('FULFILLED')) color = 'bg-emerald-100 text-emerald-700'
-  else if (type.includes('FAILED')) color = 'bg-red-100 text-red-700'
+  let color = 'bg-white/[0.07] text-slate-300'
+  if (type.includes('Created')) color = 'bg-[#9dd6ff]/12 text-[#9dd6ff]'
+  else if (type.includes('AWAITING') || type.includes('PENDING')) color = 'bg-amber-300/12 text-amber-200'
+  else if (type.includes('Paid') || type.includes('PAID')) color = 'bg-emerald-300/12 text-emerald-200'
+  else if (type.includes('Fulfilled') || type.includes('FULFILLED')) color = 'bg-cyan-300/12 text-cyan-200'
+  else if (type.includes('FAILED')) color = 'bg-red-300/12 text-red-200'
 
   const label = type
     .replace('StatusChanged:', '')

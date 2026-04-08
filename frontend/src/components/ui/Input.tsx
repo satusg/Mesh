@@ -11,9 +11,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-')
 
     return (
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-2">
         {label && (
-          <label htmlFor={inputId} className="text-sm font-medium text-gray-700">
+          <label htmlFor={inputId} className="text-xs font-medium uppercase tracking-[0.24em] text-slate-400">
             {label}
           </label>
         )}
@@ -21,11 +21,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           id={inputId}
           className={[
-            'block w-full rounded-lg border px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400',
-            'shadow-sm outline-none transition-colors',
+            'block w-full rounded-full border px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500',
+            'bg-white/[0.03] outline-none transition-colors',
             error
-              ? 'border-red-500 ring-1 ring-red-500 focus:ring-red-500'
-              : 'border-gray-300 focus:border-brand-500 focus:ring-1 focus:ring-brand-500',
+              ? 'border-red-400/70 ring-1 ring-red-400/70 focus:ring-red-400/70'
+              : 'border-white/10 focus:border-[#9dd6ff]/60 focus:ring-1 focus:ring-[#9dd6ff]/50',
             className,
           ].join(' ')}
           aria-invalid={!!error}
@@ -33,12 +33,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           {...rest}
         />
         {error && (
-          <p id={`${inputId}-error`} className="text-xs text-red-600" role="alert">
+          <p id={`${inputId}-error`} className="text-xs text-red-300" role="alert">
             {error}
           </p>
         )}
         {hint && !error && (
-          <p id={`${inputId}-hint`} className="text-xs text-gray-500">
+          <p id={`${inputId}-hint`} className="text-xs text-slate-500">
             {hint}
           </p>
         )}

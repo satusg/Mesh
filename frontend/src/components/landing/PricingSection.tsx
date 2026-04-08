@@ -10,46 +10,46 @@ const included = [
 
 export function PricingSection() {
   return (
-    <section id="pricing" className="bg-white px-4 py-20 sm:px-6">
+    <section id="pricing" className="px-4 py-24 sm:px-6 sm:py-32">
       <div className="mx-auto max-w-6xl">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
-          <div className="space-y-4">
-            <p className="text-xs uppercase tracking-[0.28em] text-gray-400">Pricing</p>
-            <h2 className="font-serif text-4xl tracking-tight text-gray-950">
-              One purchase. One collector piece. No unnecessary extras.
+        <div className="grid gap-14 border-y border-white/8 py-12 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end">
+          <div className="space-y-5">
+            <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Purchase</p>
+            <h2 className="font-serif text-5xl tracking-tight text-white">
+              One object. One payment. Nothing extra.
             </h2>
-            <p className="max-w-2xl text-base leading-7 text-gray-600">
-              A straightforward retail offer for a single physical product, with secure crypto checkout and a calmer post-purchase flow.
+            <p className="max-w-2xl text-base leading-8 text-slate-400">
+              The offer stays compact: one collector coin, one capsule, one numbered insert, and status updates after purchase.
             </p>
 
-            <div className="divide-y divide-black/10 border-y border-black/10 pt-2">
+            <div className="divide-y divide-white/8 border-t border-white/8 pt-3">
               {included.map((item) => (
-                <div key={item} className="py-4 text-sm text-gray-700">
+                <div key={item} className="py-4 text-sm text-slate-300">
                   {item}
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="rounded-[32px] border border-black/10 bg-[#f8f5f0] p-8 shadow-[0_20px_60px_rgba(17,24,39,0.06)]">
-            <p className="text-xs uppercase tracking-[0.24em] text-gray-400">Collector edition</p>
-            <div className="mt-4 flex items-end gap-2">
-              <span className="font-serif text-6xl leading-none text-gray-950">$99</span>
-              <span className="pb-2 text-sm text-gray-500">USD</span>
+          <div className="space-y-6 border-t border-white/8 pt-8 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+            <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Collector edition</p>
+            <div className="flex items-end gap-2">
+              <span className="font-serif text-7xl leading-none text-white">$99</span>
+              <span className="pb-2 text-sm text-slate-500">USD</span>
             </div>
-            <p className="mt-3 text-sm leading-6 text-gray-600">
-              Includes the coin, capsule, and presentation insert in one clean purchase.
+            <p className="text-sm leading-7 text-slate-400">
+              One-time purchase. Pay with crypto through trusted exchanges and wallets using Mesh’s embedded checkout. Fulfillment updates by email.
             </p>
 
-            <div className="mt-8">
+            <div>
               <Link to="/checkout">
                 <Button fullWidth size="lg">
-                  Order now
+                  Proceed to checkout
                 </Button>
               </Link>
             </div>
 
-            <p className="mt-4 text-sm text-gray-500">30-day returns. Confirmation and fulfillment updates are sent by email.</p>
+            <p className="text-sm text-slate-500">30-day returns.</p>
           </div>
         </div>
       </div>

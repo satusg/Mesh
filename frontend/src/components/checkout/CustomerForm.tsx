@@ -23,7 +23,7 @@ export function CustomerForm({ onSubmit, isLoading }: CustomerFormProps) {
   } = useForm<CustomerFormValues>({ resolver: zodResolver(schema) })
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
       <Input
         label="Full name"
         placeholder="Jane Smith"
@@ -40,7 +40,7 @@ export function CustomerForm({ onSubmit, isLoading }: CustomerFormProps) {
         {...register('email')}
       />
       <Button type="submit" size="lg" loading={isLoading} className="w-full">
-        Continue to payment
+        Continue
       </Button>
     </form>
   )

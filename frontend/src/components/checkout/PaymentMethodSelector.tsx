@@ -10,8 +10,8 @@ interface MethodOption {
 
 const MeshIcon = () => (
   <svg className="h-9 w-9" viewBox="0 0 24 24" fill="none">
-    <rect width="24" height="24" rx="7" fill="#4f46e5"/>
-    <path d="M7 16V8h1.6l3.4 4.2L15.4 8H17v8h-1.8v-5l-2.8 3.4h-.8L8.8 11v5H7z" fill="white" />
+    <rect width="24" height="24" rx="7" fill="#111827"/>
+    <path d="M7 16V8h1.6l3.4 4.2L15.4 8H17v8h-1.8v-5l-2.8 3.4h-.8L8.8 11v5H7z" fill="#f8fafc" />
   </svg>
 )
 
@@ -19,7 +19,7 @@ const methods: MethodOption[] = [
   {
     value:       'MESH',
     label:       'Pay with crypto',
-    description: 'Secure one-click transfer from trusted exchanges and wallets.',
+    description: 'Connect a trusted exchange or wallet once, review the transfer, and confirm without manual address entry.',
     icon:        <MeshIcon />,
     marks:       ['Coinbase', 'Binance', 'Kraken', 'MetaMask'],
   },
@@ -33,14 +33,14 @@ interface PaymentMethodSelectorProps {
 export function PaymentMethodSelector({ selected, onChange }: PaymentMethodSelectorProps) {
   return (
     <div className="space-y-4">
-      <div className="border-b border-gray-200 pb-3">
+      <div className="border-b border-white/10 pb-4">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">Payment</h2>
-          <p className="mt-1 text-sm text-gray-500">Use the recommended crypto flow below.</p>
+          <h2 className="text-lg font-semibold text-white">Payment method</h2>
+          <p className="mt-1 text-sm text-slate-400">Prioritize the embedded Mesh flow before any manual crypto transfer fallback.</p>
         </div>
       </div>
 
-      <div className="divide-y divide-gray-200 border-y border-gray-200">
+      <div className="divide-y divide-white/10 border-y border-white/10">
         {methods.map((m) => (
           <button
             key={m.value}
@@ -48,10 +48,10 @@ export function PaymentMethodSelector({ selected, onChange }: PaymentMethodSelec
             onClick={() => onChange(m.value)}
             className={[
               'grid w-full gap-4 py-5 text-left transition-all md:grid-cols-[auto_minmax(0,1fr)_auto]',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-4',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200 focus-visible:ring-offset-4 focus-visible:ring-offset-[#050816]',
               selected === m.value
-                ? 'bg-brand-50/50'
-                : 'hover:bg-gray-50/80',
+                ? 'bg-white/5'
+                : 'hover:bg-white/[0.03]',
             ].join(' ')}
             aria-pressed={selected === m.value}
           >
@@ -59,14 +59,14 @@ export function PaymentMethodSelector({ selected, onChange }: PaymentMethodSelec
               {m.icon}
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-gray-900">{m.label}</span>
+                  <span className="text-sm font-semibold text-white">{m.label}</span>
                   {selected === m.value && (
-                    <span className="rounded-full bg-brand-600 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white">
-                      Recommended
+                    <span className="rounded-full border border-white/12 bg-white/[0.08] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-200">
+                      Smart Pay
                     </span>
                   )}
                 </div>
-                <span className="block max-w-xl text-sm leading-6 text-gray-500">{m.description}</span>
+                <span className="block max-w-xl text-sm leading-6 text-slate-400">{m.description}</span>
               </div>
             </div>
 
@@ -74,7 +74,7 @@ export function PaymentMethodSelector({ selected, onChange }: PaymentMethodSelec
               {m.marks.map((mark) => (
                 <span
                   key={mark}
-                  className="rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-gray-600 shadow-sm"
+                  className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-slate-300"
                 >
                   {mark}
                 </span>
@@ -86,8 +86,8 @@ export function PaymentMethodSelector({ selected, onChange }: PaymentMethodSelec
                 className={[
                   'flex h-6 w-6 items-center justify-center rounded-full border transition-colors',
                   selected === m.value
-                    ? 'border-brand-600 bg-brand-600 text-white'
-                    : 'border-gray-300 text-transparent',
+                    ? 'border-sky-200 bg-sky-200 text-[#050816]'
+                    : 'border-white/20 text-transparent',
                 ].join(' ')}
               >
                 <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">

@@ -40,13 +40,23 @@ export const useCheckoutStore = create<CheckoutState>((set) => ({
   error:              null,
 
   setOrderCreated: (orderId, productId, email, name) =>
-    set({ orderId, productId, customerEmail: email, customerName: name, error: null }),
+    set({
+      orderId,
+      productId,
+      customerEmail: email,
+      customerName: name,
+      meshLinkToken: null,
+      gatewayReference: null,
+      orderStatus: null,
+      licenseKey: null,
+      error: null,
+    }),
 
   setPaymentMethod: (method) =>
     set((state) => (
       state.selectedMethod === method
         ? { selectedMethod: method }
-        : { selectedMethod: method, meshLinkToken: null }
+        : { selectedMethod: method, meshLinkToken: null, gatewayReference: null }
     )),
 
   setPaymentInitiated: ( linkToken, ref) =>
