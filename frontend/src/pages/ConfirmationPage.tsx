@@ -1,12 +1,59 @@
-import { useParams, Link } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import { useOrderPolling } from '@/hooks/useCheckout'
 import { Spinner } from '@/components/ui/Spinner'
 import { Button } from '@/components/ui/Button'
 
+function formatCurrency(amount: number, currency: string) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+  }).format(amount / 100)
+}
+
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(new Date(value))
+}
+
 export function ConfirmationPage() {
   const { orderId } = useParams<{ orderId: string }>()
-  const { status, licenseKey } = useOrderPolling(orderId)
+  const { order, status, licenseKey } = useOrderPolling(orderId)
+  const [copied, setCopied] = useState(false)
+
   const referenceCode = licenseKey ?? orderId
+
+  const setupSteps = useMemo(() => [
+    {
+      title: 'Save your reference',
+      body: 'Keep the configuration reference handy so support can trace this order quickly if you need help later.',
+    },
+    {
+      title: 'Watch your inbox',
+      body: order?.customer.email
+        ? `We will send updates to ${order.customer.email} as the order moves through review and fulfillment.`
+        : 'We will send updates to the email address used at checkout as the order moves through review and fulfillment.',
+    },
+    {
+      title: 'Reach out if anything changed',
+      body: 'If shipping or buyer details need to be corrected, contact support before the order enters the next handling step.',
+    },
+  ], [order?.customer.email])
+
+  const handleCopyReference = async () => {
+    if (!referenceCode) return
+
+    try {
+      await navigator.clipboard.writeText(referenceCode)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 1600)
+    } catch {
+      setCopied(false)
+    }
+  }
 
   if (!orderId) {
     return (
@@ -21,15 +68,14 @@ export function ConfirmationPage() {
     )
   }
 
-  // Polling / processing
   if (!status || status === 'PENDING' || status === 'AWAITING_PAYMENT' || status === 'PAID') {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-8 text-center bg-gray-50">
+      <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-gray-50 p-8 text-center">
         <Spinner size="lg" />
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Confirming your order…</h1>
+          <h1 className="text-xl font-bold text-gray-900">Preparing your configuration workspace...</h1>
           <p className="mt-2 text-sm text-gray-500">
-            This usually takes just a few seconds. Please don't close this tab.
+            This usually takes just a few seconds. Please do not close this tab.
           </p>
         </div>
         <p className="text-xs text-gray-400">Order ID: {orderId}</p>
@@ -37,10 +83,9 @@ export function ConfirmationPage() {
     )
   }
 
-  // Failed
   if (status === 'FAILED') {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-8 text-center bg-gray-50">
+      <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-gray-50 p-8 text-center">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
           <svg className="h-8 w-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -59,59 +104,188 @@ export function ConfirmationPage() {
     )
   }
 
-  // Fulfilled ✓
   return (
-    <main className="min-h-screen bg-gray-50 py-16 px-4 sm:px-6">
-      <div className="mx-auto max-w-lg text-center">
-        {/* Success icon */}
-        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
-          <svg className="h-10 w-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
+    <main className="min-h-screen overflow-hidden bg-[#f5f1e8] text-gray-950">
+      <div className="relative border-b border-black/5 bg-[radial-gradient(circle_at_top_left,_rgba(220,181,109,0.22),_transparent_32%),linear-gradient(180deg,_rgba(255,255,255,0.8),_rgba(255,255,255,0))]">
+        <div className="absolute inset-x-0 top-0 h-px bg-black/10" />
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.45fr)_320px] lg:items-end">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#d9c7a5] bg-[#fcf8ef] px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[#7a5b2f]">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                Configuration Ready
+              </div>
+              <h1 className="mt-5 max-w-3xl font-serif text-4xl font-semibold tracking-tight text-gray-950 sm:text-5xl">
+                Order configuration workspace prepared.
+              </h1>
+              <p className="mt-4 max-w-2xl text-base leading-7 text-gray-600 sm:text-lg">
+                {order?.customer.fullName
+                  ? `${order.customer.fullName}, your ${order.productName} order is confirmed and the post-purchase packet is ready below.`
+                  : 'Your order is confirmed and the post-purchase packet is ready below.'}
+              </p>
+            </div>
 
-        <h1 className="mt-6 text-3xl font-extrabold text-gray-900">Thank you!</h1>
-        <p className="mt-3 text-gray-500">
-          Your order confirmation is ready. We have emailed your receipt and will keep you updated as the order moves forward.
-        </p>
-
-        {referenceCode && (
-          <div className="mt-8 rounded-xl border-2 border-brand-200 bg-brand-50 p-6">
-            <p className="text-xs font-semibold uppercase tracking-widest text-brand-600 mb-2">
-              Order reference
-            </p>
-            <code className="block rounded-lg bg-white border border-brand-200 px-4 py-3 text-lg font-bold tracking-widest text-gray-900 select-all">
-              {referenceCode}
-            </code>
-            <button
-              type="button"
-              onClick={() => navigator.clipboard.writeText(referenceCode)}
-              className="mt-3 text-xs text-brand-600 hover:text-brand-800 underline"
-            >
-              Copy to clipboard
-            </button>
+            <div className="border-t border-black/10 pt-6 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-gray-500">
+                Live Status
+              </p>
+              <p className="mt-3 text-3xl font-semibold tracking-tight text-gray-950">
+                {status === 'FULFILLED' ? 'Confirmed' : status}
+              </p>
+              <p className="mt-2 text-sm leading-6 text-gray-600">
+                Keep this page for reference while fulfillment and shipping updates continue by email.
+              </p>
+            </div>
           </div>
-        )}
-
-        <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 text-left space-y-4">
-          <h2 className="font-semibold text-gray-900">What happens next</h2>
-          <ol className="space-y-3 text-sm text-gray-600 list-decimal list-inside">
-            <li>Keep your order reference for support and order questions.</li>
-            <li>Check your inbox for the payment receipt and confirmation email.</li>
-            <li>Watch for follow-up updates as the order is prepared.</li>
-          </ol>
         </div>
+      </div>
 
-        <div className="mt-8 flex justify-center gap-4">
-          <Link to="/">
-            <Button variant="secondary">Back to home</Button>
-          </Link>
-          <a href="mailto:support@usdccoin.shop">
-            <Button variant="ghost">Contact support</Button>
-          </a>
-        </div>
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1.35fr)_320px] lg:py-14">
+        <section className="space-y-10">
+          <div className="border-b border-black/10 pb-8">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gray-500">
+                  Primary Reference
+                </p>
+                <code className="mt-3 block break-all font-mono text-2xl font-semibold tracking-[0.12em] text-gray-950 sm:text-3xl">
+                  {referenceCode}
+                </code>
+              </div>
 
-        <p className="mt-6 text-xs text-gray-400">Order ID: {orderId}</p>
+              <button
+                type="button"
+                onClick={handleCopyReference}
+                className="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-50"
+              >
+                {copied ? 'Copied' : 'Copy reference'}
+              </button>
+            </div>
+          </div>
+
+          <div className="grid gap-10 border-b border-black/10 pb-10 lg:grid-cols-[minmax(0,1fr)_220px]">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gray-500">
+                Configuration Path
+              </p>
+              <div className="mt-6 space-y-6">
+                {setupSteps.map((step, index) => (
+                  <div key={step.title} className="flex gap-4">
+                    <div className="flex flex-col items-center">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#d9c7a5] bg-[#fcf8ef] text-sm font-semibold text-[#7a5b2f]">
+                        {index + 1}
+                      </div>
+                      {index < setupSteps.length - 1 && (
+                        <div className="mt-2 h-full w-px bg-black/10" />
+                      )}
+                    </div>
+                    <div className="pb-6">
+                      <h2 className="text-lg font-semibold text-gray-950">{step.title}</h2>
+                      <p className="mt-2 max-w-xl text-sm leading-7 text-gray-600">{step.body}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-t border-black/10 pt-6 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gray-500">
+                Support
+              </p>
+              <p className="mt-4 text-sm leading-7 text-gray-600">
+                Need to correct customer details or ask about fulfillment timing?
+              </p>
+              <a
+                href="mailto:support@usdccoin.shop"
+                className="mt-4 inline-flex text-sm font-semibold text-gray-950 underline decoration-[#d9c7a5] underline-offset-4 hover:text-[#7a5b2f]"
+              >
+                support@usdccoin.shop
+              </a>
+            </div>
+          </div>
+
+          <div className="grid gap-8 border-b border-black/10 pb-10 sm:grid-cols-2">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gray-500">
+                Order Packet
+              </p>
+              <dl className="mt-5 space-y-4 text-sm">
+                <div className="flex items-start justify-between gap-6 border-b border-black/5 pb-4">
+                  <dt className="text-gray-500">Product</dt>
+                  <dd className="text-right font-medium text-gray-950">{order?.productName ?? 'Physical USDC Coin'}</dd>
+                </div>
+                <div className="flex items-start justify-between gap-6 border-b border-black/5 pb-4">
+                  <dt className="text-gray-500">Customer</dt>
+                  <dd className="text-right font-medium text-gray-950">{order?.customer.fullName ?? 'Pending'}</dd>
+                </div>
+                <div className="flex items-start justify-between gap-6 border-b border-black/5 pb-4">
+                  <dt className="text-gray-500">Email</dt>
+                  <dd className="text-right font-medium text-gray-950">{order?.customer.email ?? 'Pending'}</dd>
+                </div>
+                <div className="flex items-start justify-between gap-6 border-b border-black/5 pb-4">
+                  <dt className="text-gray-500">Placed on</dt>
+                  <dd className="text-right font-medium text-gray-950">{order ? formatDate(order.createdAt) : 'Pending'}</dd>
+                </div>
+                <div className="flex items-start justify-between gap-6">
+                  <dt className="text-gray-500">Total</dt>
+                  <dd className="text-right font-medium text-gray-950">
+                    {order ? formatCurrency(order.totalAmount, order.currency) : '$99.00'}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gray-500">
+                Record Keeping
+              </p>
+              <ul className="mt-5 space-y-4 text-sm leading-7 text-gray-600">
+                <li>Order ID: <span className="font-medium text-gray-950">{orderId}</span></li>
+                <li>Reference code: <span className="font-medium text-gray-950">{referenceCode}</span></li>
+                <li>Status updates continue from this point by email rather than on the checkout screen.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link to="/">
+              <Button variant="secondary">Back to home</Button>
+            </Link>
+            <a href="mailto:support@usdccoin.shop">
+              <Button variant="ghost">Contact support</Button>
+            </a>
+          </div>
+        </section>
+
+        <aside className="border-t border-black/10 pt-8 lg:pt-0">
+          <div className="lg:sticky lg:top-24">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gray-500">
+              Configuration Notes
+            </p>
+            <div className="mt-5 space-y-6 text-sm leading-7 text-gray-600">
+              <div>
+                <h2 className="font-semibold text-gray-950">Confirmation complete</h2>
+                <p className="mt-2">
+                  Payment has cleared and the configuration record for this order has been generated.
+                </p>
+              </div>
+
+              <div>
+                <h2 className="font-semibold text-gray-950">Next communication</h2>
+                <p className="mt-2">
+                  The next update will be delivered to your inbox once fulfillment advances or if support needs clarification.
+                </p>
+              </div>
+
+              <div>
+                <h2 className="font-semibold text-gray-950">Keep this reference</h2>
+                <p className="mt-2">
+                  Sharing the reference code is the fastest way for support to locate and review this purchase.
+                </p>
+              </div>
+            </div>
+          </div>
+        </aside>
       </div>
     </main>
   )

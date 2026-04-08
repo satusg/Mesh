@@ -1,8 +1,8 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCheckoutStore } from '@/store/checkoutStore'
 import { api } from '@/services/api'
-import type { CustomerFormValues, PaymentMethod } from '@/types'
+import type { CustomerFormValues, OrderView, PaymentMethod } from '@/types'
 
 const PRODUCT_ID = import.meta.env.VITE_PRODUCT_ID ?? 'a1b2c3d4-0000-0000-0000-000000000001'
 const POLL_INTERVAL_MS  = 2000
@@ -117,12 +117,13 @@ export function useCheckout() {
 
 export function useOrderPolling(orderId: string | undefined) {
   const store    = useCheckoutStore()
-  const navigate = useNavigate()
+  const [order, setOrder] = useState<OrderView | null>(null)
 
   useEffect(() => {
     if (!orderId) return
 
     api.getOrder(orderId).then((order) => {
+      setOrder(order)
       store.setOrderStatus(order.status, order.licenseKey)
     }).catch(() => {})
 
@@ -131,6 +132,7 @@ export function useOrderPolling(orderId: string | undefined) {
       attempts++
       try {
         const order = await api.getOrder(orderId)
+        setOrder(order)
         store.setOrderStatus(order.status, order.licenseKey)
         if (order.status === 'FULFILLED' || order.status === 'FAILED' || attempts >= POLL_MAX_ATTEMPTS) {
           clearInterval(interval)
@@ -141,7 +143,7 @@ export function useOrderPolling(orderId: string | undefined) {
     }, POLL_INTERVAL_MS)
 
     return () => clearInterval(interval)
-  }, [orderId, store, navigate])
+  }, [orderId, store])
 
-  return { status: store.orderStatus, licenseKey: store.licenseKey }
+  return { order, status: store.orderStatus, licenseKey: store.licenseKey }
 }
