@@ -8,8 +8,9 @@ services:
     startCommand: npm run start
     healthCheckPath: /health
 
-  - type: static_site
+  - type: web
     name: mesh-frontend
+    runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
