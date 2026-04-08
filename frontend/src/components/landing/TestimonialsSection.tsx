@@ -1,53 +1,35 @@
-const testimonials = [
+const details = [
   {
-    quote:
-      "We integrated MeshPro in a weekend and launched our dashboard two sprints ahead of schedule. The TypeScript types alone saved us days of debugging.",
-    name:   'Sarah Chen',
-    role:   'Lead Engineer, Veritas Labs',
-    avatar: 'SC',
+    title: 'In the box',
+    body: 'One physical USDC coin, one protective capsule, and one numbered presentation card.',
   },
   {
-    quote:
-      "The Figma kit is exactly what we needed — I can hand designs to developers and they map 1:1 to real components. No more 'close enough' implementations.",
-    name:   'Marco Ricci',
-    role:   'Product Designer, Flowstate',
-    avatar: 'MR',
+    title: 'For display',
+    body: 'Sized and packaged to feel at home on a desk, shelf, or within a larger collector setup.',
   },
   {
-    quote:
-      "Dark mode worked flawlessly out of the box. The accessibility defaults are excellent — we passed our first a11y audit without a single remediation.",
-    name:   'Amara Diallo',
-    role:   'Frontend Architect, Kibo Finance',
-    avatar: 'AD',
+    title: 'For gifting',
+    body: 'Minimal packaging and clean presentation make it easy to hand off without extra wrapping or explanation.',
   },
 ]
 
 export function TestimonialsSection() {
   return (
-    <section className="bg-white py-24 px-4 sm:px-6">
+    <section className="bg-[#f1ece4] px-4 py-20 sm:px-6">
       <div className="mx-auto max-w-6xl">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Loved by engineering teams
-          </h2>
+        <div className="mb-12 flex flex-col gap-3">
+          <p className="text-xs uppercase tracking-[0.28em] text-gray-400">What arrives</p>
+          <h2 className="font-serif text-4xl tracking-tight text-gray-950">A cleaner, more giftable package.</h2>
         </div>
 
-        <div className="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-8 sm:grid-cols-3">
-          {testimonials.map((t) => (
-            <figure key={t.name} className="rounded-xl border border-gray-100 bg-gray-50 p-6">
-              <blockquote>
-                <p className="text-sm leading-6 text-gray-700">"{t.quote}"</p>
-              </blockquote>
-              <figcaption className="mt-6 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-600 text-sm font-bold text-white">
-                  {t.avatar}
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">{t.name}</p>
-                  <p className="text-xs text-gray-500">{t.role}</p>
-                </div>
-              </figcaption>
-            </figure>
+        <div className="grid gap-6 lg:grid-cols-3">
+          {details.map((item) => (
+            <article key={item.title} className="rounded-[28px] border border-black/10 bg-white p-8 shadow-[0_16px_40px_rgba(17,24,39,0.05)]">
+              <p className="text-xs uppercase tracking-[0.28em] text-gray-400">{item.title}</p>
+              <p className="mt-5 font-serif text-2xl leading-tight tracking-tight text-gray-950">
+                {item.body}
+              </p>
+            </article>
           ))}
         </div>
       </div>

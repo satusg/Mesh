@@ -8,6 +8,6 @@ const { orderController, productController, webhookController } = buildContainer
 const app = createApp(orderController, productController, webhookController)
 
 app.listen(PORT, () => {
-  console.log(`[MeshPro API] Listening on http://localhost:${PORT}`)
-  console.log(`[MeshPro API] Health: http://localhost:${PORT}/health`)
+  console.log(`[USDC Coin API] Listening on http://localhost:${PORT}`)
+  console.log(`[USDC Coin API] Health: http://localhost:${PORT}/health`)
 })

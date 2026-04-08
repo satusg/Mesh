@@ -10,6 +10,7 @@ export default defineConfig({
     },
   },
   server: {
+    allowedHosts: ['.loca.lt', '.trycloudflare.com'],
     port: 5174,
     proxy: {
       '/api': {

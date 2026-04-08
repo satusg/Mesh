@@ -2,69 +2,54 @@ import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
 
 const included = [
-  '50+ TypeScript components',
-  'Figma design kit & tokens',
-  'Dark mode & full theming',
-  'WCAG 2.1 AA accessibility',
-  'Lifetime updates',
-  'Private GitHub repo access',
-  'Discord community',
-  'Priority email support',
+  'One physical USDC collector coin',
+  'Protective display capsule',
+  'Numbered presentation card',
+  'Email confirmation and order updates',
 ]
 
 export function PricingSection() {
   return (
-    <section id="pricing" className="bg-gray-50 py-24 px-4 sm:px-6">
+    <section id="pricing" className="bg-white px-4 py-20 sm:px-6">
       <div className="mx-auto max-w-6xl">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Simple, one-time pricing
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-gray-500">
-            No subscriptions. No per-seat fees. One payment, lifetime access.
-          </p>
-        </div>
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
+          <div className="space-y-4">
+            <p className="text-xs uppercase tracking-[0.28em] text-gray-400">Pricing</p>
+            <h2 className="font-serif text-4xl tracking-tight text-gray-950">
+              One purchase. One collector piece. No unnecessary extras.
+            </h2>
+            <p className="max-w-2xl text-base leading-7 text-gray-600">
+              A straightforward retail offer for a single physical product, with secure crypto checkout and a calmer post-purchase flow.
+            </p>
 
-        <div className="mx-auto mt-12 max-w-sm">
-          <div className="relative rounded-2xl border-2 border-brand-600 bg-white p-8 shadow-xl">
-            {/* Popular badge */}
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-              <span className="rounded-full bg-brand-600 px-4 py-1 text-xs font-semibold text-white shadow">
-                One-time purchase
-              </span>
-            </div>
-
-            <div className="text-center">
-              <p className="text-lg font-semibold text-gray-900">MeshPro License</p>
-              <div className="mt-3 flex items-end justify-center gap-1">
-                <span className="text-5xl font-extrabold text-gray-900">$99</span>
-                <span className="mb-1 text-gray-500 text-sm">USD</span>
-              </div>
-              <p className="mt-1 text-sm text-gray-500">One developer license · unlimited projects</p>
-            </div>
-
-            <ul className="mt-8 space-y-3">
+            <div className="divide-y divide-black/10 border-y border-black/10 pt-2">
               {included.map((item) => (
-                <li key={item} className="flex items-start gap-3 text-sm text-gray-700">
-                  <svg className="mt-0.5 h-4 w-4 shrink-0 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                  </svg>
+                <div key={item} className="py-4 text-sm text-gray-700">
                   {item}
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
+          </div>
+
+          <div className="rounded-[32px] border border-black/10 bg-[#f8f5f0] p-8 shadow-[0_20px_60px_rgba(17,24,39,0.06)]">
+            <p className="text-xs uppercase tracking-[0.24em] text-gray-400">Collector edition</p>
+            <div className="mt-4 flex items-end gap-2">
+              <span className="font-serif text-6xl leading-none text-gray-950">$99</span>
+              <span className="pb-2 text-sm text-gray-500">USD</span>
+            </div>
+            <p className="mt-3 text-sm leading-6 text-gray-600">
+              Includes the coin, capsule, and presentation insert in one clean purchase.
+            </p>
 
             <div className="mt-8">
               <Link to="/checkout">
                 <Button fullWidth size="lg">
-                  Buy now — $99
+                  Order now
                 </Button>
               </Link>
             </div>
 
-            <p className="mt-4 text-center text-xs text-gray-400">
-              30-day money-back guarantee · Instant license delivery
-            </p>
+            <p className="mt-4 text-sm text-gray-500">30-day returns. Confirmation and fulfillment updates are sent by email.</p>
           </div>
         </div>
       </div>

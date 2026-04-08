@@ -63,6 +63,9 @@ export function useCheckout() {
           } else if (order.status === 'FAILED' || attempts >= POLL_MAX_ATTEMPTS) {
             clearInterval(interval)
             if (order.status === 'FAILED') store.setError('Payment failed. Please try again.')
+            if (attempts >= POLL_MAX_ATTEMPTS && order.status !== 'FAILED') {
+              store.setError('Payment received, but final confirmation is still pending. Please wait a moment and refresh.')
+            }
           }
         } catch {
           // Network hiccup — keep polling

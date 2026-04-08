@@ -11,15 +11,15 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  primary:   'bg-brand-600 hover:bg-brand-700 text-white shadow-sm focus-visible:ring-brand-500',
-  secondary: 'bg-white hover:bg-gray-50 text-gray-900 ring-1 ring-inset ring-gray-300 focus-visible:ring-brand-500',
-  ghost:     'text-brand-600 hover:bg-brand-50 focus-visible:ring-brand-500',
+  primary:   'bg-gray-950 hover:bg-black text-white shadow-sm focus-visible:ring-gray-900',
+  secondary: 'bg-white hover:bg-gray-50 text-gray-900 ring-1 ring-inset ring-gray-300 focus-visible:ring-gray-900',
+  ghost:     'text-gray-700 hover:bg-gray-100 focus-visible:ring-gray-900',
 }
 
 const sizeClasses: Record<Size, string> = {
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-4 py-2.5 text-sm',
-  lg: 'px-6 py-3 text-base',
+  sm: 'px-4 py-2 text-sm',
+  md: 'px-5 py-2.5 text-sm',
+  lg: 'px-7 py-3.5 text-base',
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -28,7 +28,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       disabled={disabled || loading}
       className={[
-        'inline-flex items-center justify-center gap-2 rounded-lg font-semibold',
+        'inline-flex items-center justify-center gap-2 rounded-full font-semibold tracking-tight',
         'transition-colors duration-150',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
         'disabled:opacity-50 disabled:cursor-not-allowed',

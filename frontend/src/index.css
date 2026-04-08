@@ -15,13 +15,23 @@
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    @apply text-gray-900 bg-white;
+    @apply bg-[#f7f3ee] text-gray-900;
+  }
+
+  h1, h2, h3, h4 {
+    font-feature-settings: "ss01" on, "cv01" on, "cv11" on;
+    letter-spacing: -0.03em;
   }
 
   /* Focus styles for keyboard navigation */
   :focus-visible {
-    outline: 2px solid theme('colors.brand.500');
+    outline: 2px solid #111827;
     outline-offset: 2px;
+  }
+
+  ::selection {
+    background: #e7dccf;
+    color: #111827;
   }
 
   /* Custom scrollbar */

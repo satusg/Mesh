@@ -24,31 +24,22 @@ export function CustomerForm({ onSubmit, isLoading }: CustomerFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
-      <div>
-        <h2 className="text-base font-semibold text-gray-900">Your details</h2>
-        <p className="text-sm text-gray-500 mt-0.5">Your license key will be sent to this email.</p>
-      </div>
-
       <Input
         label="Full name"
         placeholder="Jane Smith"
         error={errors.fullName?.message}
         autoComplete="name"
-        value={"Jane Smith"}
         {...register('fullName')}
       />
-
       <Input
-        label="Email address"
+        label="Email"
         type="email"
         placeholder="jane@example.com"
         error={errors.email?.message}
-        value={"test@test.com"}
         autoComplete="email"
         {...register('email')}
       />
-
-      <Button type="submit" fullWidth loading={isLoading}>
+      <Button type="submit" size="lg" loading={isLoading} className="w-full">
         Continue to payment
       </Button>
     </form>

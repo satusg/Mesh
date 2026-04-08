@@ -2,61 +2,51 @@ import { useState } from 'react'
 
 const faqs = [
   {
-    q: 'Is this a subscription or a one-time purchase?',
-    a: 'One-time purchase. Pay $99 once and receive lifetime access to all current and future versions of MeshPro.',
+    q: 'Is this a digital product?',
+    a: 'No. This storefront now sells a physical USDC collector coin. Payment happens online, but the product itself is a real display piece.',
   },
   {
-    q: 'What frameworks does MeshPro support?',
-    a: 'MeshPro is built for React 18+ with TypeScript. It uses CSS variables for theming, so it is compatible with any styling solution (Tailwind, CSS Modules, styled-components).',
+    q: 'What do I receive after checkout?',
+    a: 'You receive an order confirmation by email, followed by status updates as the order is processed and prepared for fulfillment.',
   },
   {
-    q: 'How do I receive my license key?',
-    a: 'Immediately after your payment is confirmed, your license key is emailed to you and displayed on the confirmation page. Use it to activate your private GitHub repository access.',
+    q: 'What is included in the order?',
+    a: 'Each order includes one physical USDC coin, a protective capsule, and a numbered presentation card.',
   },
   {
-    q: 'Can I use MeshPro in client projects?',
-    a: 'Yes. A single license covers unlimited personal and commercial projects for one developer. Team licenses (5-seat, unlimited-seat) are available on request.',
-  },
-  {
-    q: 'What is your refund policy?',
-    a: 'If you are not satisfied within 30 days of purchase, contact support for a full refund — no questions asked.',
+    q: 'Do you offer refunds?',
+    a: 'Yes. If the coin is not the right fit, you can request a return within 30 days of delivery.',
   },
 ]
 
 export function FAQSection() {
-  const [open, setOpen] = useState<number | null>(null)
+  const [open, setOpen] = useState<number | null>(0)
 
   return (
-    <section id="faq" className="bg-gray-50 py-24 px-4 sm:px-6">
-      <div className="mx-auto max-w-2xl">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Frequently asked questions
-          </h2>
+    <section id="faq" className="bg-[#f7f3ee] px-4 py-20 sm:px-6">
+      <div className="mx-auto max-w-4xl">
+        <div className="mb-10 space-y-3">
+          <p className="text-xs uppercase tracking-[0.28em] text-gray-400">FAQ</p>
+          <h2 className="font-serif text-4xl tracking-tight text-gray-950">A few practical questions.</h2>
         </div>
 
-        <dl className="mt-12 space-y-2">
+        <dl className="divide-y divide-black/10 border-y border-black/10">
           {faqs.map((faq, i) => (
-            <div key={i} className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+            <div key={faq.q} className="py-1">
               <dt>
                 <button
                   type="button"
                   onClick={() => setOpen(open === i ? null : i)}
-                  className="flex w-full items-center justify-between px-6 py-4 text-left text-sm font-semibold text-gray-900 hover:bg-gray-50 transition-colors"
+                  className="flex w-full items-center justify-between gap-4 py-5 text-left"
                   aria-expanded={open === i}
                 >
-                  {faq.q}
-                  <svg
-                    className={`h-4 w-4 shrink-0 text-gray-400 transition-transform ${open === i ? 'rotate-180' : ''}`}
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  <span className="text-base font-medium text-gray-950">{faq.q}</span>
+                  <span className="text-gray-400">{open === i ? '−' : '+'}</span>
                 </button>
               </dt>
               {open === i && (
-                <dd className="px-6 pb-4 text-sm text-gray-600 leading-6 border-t border-gray-100">
-                  <p className="pt-3">{faq.a}</p>
+                <dd className="max-w-3xl pb-5 text-sm leading-7 text-gray-600">
+                  {faq.a}
                 </dd>
               )}
             </div>

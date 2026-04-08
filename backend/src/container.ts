@@ -7,6 +7,7 @@ import { CreateOrderUseCase } from './application/use-cases/create-order/CreateO
 import { GetOrderUseCase } from './application/use-cases/get-order/GetOrderUseCase'
 import { InitiatePaymentUseCase } from './application/use-cases/initiate-payment/InitiatePaymentUseCase'
 import { ConfirmPaymentUseCase } from './application/use-cases/confirm-payment/ConfirmPaymentUseCase'
+import { CompletePaymentUseCase } from './application/use-cases/complete-payment/CompletePaymentUseCase'
 import { OrderController } from './interface/http/controllers/OrderController'
 import { ProductController } from './interface/http/controllers/ProductController'
 import { WebhookController } from './interface/http/controllers/WebhookController'
@@ -45,6 +46,11 @@ export function buildContainer() {
   const createOrder     = new CreateOrderUseCase(orderRepo, productRepo)
   const getOrder        = new GetOrderUseCase(orderRepo)
   const initiatePayment = new InitiatePaymentUseCase(orderRepo, gateways)
+  const completePayment = new CompletePaymentUseCase(
+    orderRepo,
+    requireEnv('LICENSE_SECRET'),
+    process.env.ENABLE_CLIENT_PAYMENT_CONFIRMATION === 'true' || process.env.NODE_ENV !== 'production',
+  )
   const confirmPayment  = new ConfirmPaymentUseCase(
     orderRepo,
     gateways,
@@ -53,7 +59,7 @@ export function buildContainer() {
   )
 
   // ─── Controllers ─────────────────────────────────────────────────────────
-  const orderController   = new OrderController(createOrder, getOrder, initiatePayment)
+  const orderController   = new OrderController(createOrder, getOrder, initiatePayment, completePayment)
   const productController = new ProductController(productRepo)
   const webhookController = new WebhookController(confirmPayment)
 

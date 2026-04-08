@@ -5,11 +5,13 @@ import type {
   CreateOrderResponse,
   InitiatePaymentRequest,
   InitiatePaymentResponse,
+  CompletePaymentRequest,
   OrderView,
 } from '@/types'
 
 const http = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3001',
+  // Default to relative API calls so Vite proxy and public tunnels work out of the box.
+  baseURL: import.meta.env.VITE_API_URL ?? '',
   headers: { 'Content-Type': 'application/json' },
 })
 
@@ -36,6 +38,12 @@ export const api = {
     return http
       .post<InitiatePaymentResponse>(`/api/orders/${orderId}/payment`, body)
       .then((r) => r.data)
+  },
+
+  completePayment(orderId: string, body: CompletePaymentRequest): Promise<void> {
+    return http
+      .post(`/api/orders/${orderId}/payment/complete`, body)
+      .then(() => undefined)
   },
 
   getOrder(orderId: string): Promise<OrderView> {

@@ -43,6 +43,10 @@ export interface InitiatePaymentResponse {
   gatewayReference: string
 }
 
+export interface CompletePaymentRequest {
+  gatewayReference: string
+}
+
 export interface OrderView {
   orderId: string
   status: OrderStatus
