@@ -32,7 +32,7 @@ export function buildContainer() {
     process.env.MESH_RECEIVING_ADDRESS ?? '0x0000000000000000000000000000000000000000',
     process.env.MESH_NETWORK_ID        ?? 'e3c7fdd8-b1fc-4e51-85ae-bb276e075611', // ETH mainnet default
     process.env.MESH_ASSET_SYMBOL      ?? 'USDC',
-    process.env.NODE_ENV !== 'production',
+    process.env.MESH_SANDBOX !== 'false',
   )
 
   const gateways = new Map<PaymentMethod, IPaymentGateway>([
