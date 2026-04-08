@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { api, type OrderEvent } from '@/services/api'
+import { Button } from '@/components/ui/Button'
 
 export function BackofficePage() {
   const [events, setEvents] = useState<OrderEvent[]>([])
@@ -48,6 +49,32 @@ export function BackofficePage() {
   const drillDown = (orderId: string) => {
     setSearchType('order')
     setSearch(orderId)
+  }
+
+  const downloadLogs = () => {
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      filter: {
+        type: searchType,
+        query: search,
+      },
+      totalEvents: events.length,
+      events,
+    }
+
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    const suffix = searchType === 'recent' || !search
+      ? searchType
+      : `${searchType}-${search.trim().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()}`
+
+    link.href = url
+    link.download = `backoffice-logs-${suffix || 'export'}.json`
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
   }
 
   const uniqueOrders = new Set(events.map((e) => e.orderId)).size
@@ -124,6 +151,15 @@ export function BackofficePage() {
               Clear
             </button>
           )}
+
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={downloadLogs}
+            disabled={events.length === 0}
+          >
+            Download JSON
+          </Button>
         </form>
 
         {error && (
