@@ -21,7 +21,7 @@ function formatDate(value: string) {
 
 export function ConfirmationPage() {
   const { orderId } = useParams<{ orderId: string }>()
-  const { order, status, licenseKey } = useOrderPolling(orderId)
+  const { order, status, licenseKey, error, isLoaded } = useOrderPolling(orderId)
   const [copied, setCopied] = useState(false)
 
   const referenceCode = licenseKey ?? orderId
@@ -63,6 +63,43 @@ export function ConfirmationPage() {
           <Link to="/" className="mt-4 inline-block text-brand-600 hover:underline text-sm">
             Return home
           </Link>
+        </div>
+      </main>
+    )
+  }
+
+  if (isLoaded && error) {
+    const isMissingOrder = error.toLowerCase().includes('order not found')
+
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-gray-50 p-8 text-center">
+        <div className="max-w-md">
+          <div className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full ${isMissingOrder ? 'bg-amber-100' : 'bg-red-100'}`}>
+            <svg className={`h-8 w-8 ${isMissingOrder ? 'text-amber-700' : 'text-red-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {isMissingOrder ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M4.93 19h14.14c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.2 16c-.77 1.33.19 3 1.73 3z" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z" />
+              )}
+            </svg>
+          </div>
+          <h1 className="mt-6 text-2xl font-semibold text-gray-950">
+            {isMissingOrder ? 'Order confirmation not found' : 'Confirmation page unavailable'}
+          </h1>
+          <p className="mt-3 text-sm leading-6 text-gray-600">
+            {isMissingOrder
+              ? 'We could not find a confirmation record for this order ID. Double-check the link or contact support if you expected this page to exist.'
+              : 'We were not able to load the confirmation details right now. Please refresh in a moment or contact support if the issue continues.'}
+          </p>
+          <p className="mt-4 break-all text-xs text-gray-400">Order ID: {orderId}</p>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            <Link to="/">
+              <Button variant="secondary">Back to home</Button>
+            </Link>
+            <a href="mailto:support@usdccoin.shop">
+              <Button variant="ghost">Contact support</Button>
+            </a>
+          </div>
         </div>
       </main>
     )

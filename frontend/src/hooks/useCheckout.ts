@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useCheckoutStore } from '@/store/checkoutStore'
 import { api } from '@/services/api'
 import { frontendLogger } from '@/services/logger'
-import type { CustomerFormValues, OrderView, PaymentMethod } from '@/types'
+import type { CustomerFormValues, OrderStatus, OrderView, PaymentMethod } from '@/types'
 
 const PRODUCT_ID = import.meta.env.VITE_PRODUCT_ID ?? 'a1b2c3d4-0000-0000-0000-000000000001'
 const POLL_INTERVAL_MS  = 2000
@@ -133,34 +133,77 @@ export function useCheckout() {
 }
 
 export function useOrderPolling(orderId: string | undefined) {
-  const store    = useCheckoutStore()
   const [order, setOrder] = useState<OrderView | null>(null)
+  const [status, setStatus] = useState<OrderStatus | null>(null)
+  const [licenseKey, setLicenseKey] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     if (!orderId) return
 
-    api.getOrder(orderId).then((order) => {
-      setOrder(order)
-      store.setOrderStatus(order.status, order.licenseKey)
-    }).catch(() => {})
+    let isActive = true
+    let interval: ReturnType<typeof setInterval> | undefined
 
-    let attempts = 0
-    const interval = setInterval(async () => {
-      attempts++
+    const syncOrder = async () => {
       try {
-        const order = await api.getOrder(orderId)
-        setOrder(order)
-        store.setOrderStatus(order.status, order.licenseKey)
-        if (order.status === 'FULFILLED' || order.status === 'FAILED' || attempts >= POLL_MAX_ATTEMPTS) {
-          clearInterval(interval)
-        }
-      } catch {
-        if (attempts >= POLL_MAX_ATTEMPTS) clearInterval(interval)
+        const nextOrder = await api.getOrder(orderId)
+        if (!isActive) return null
+
+        setOrder(nextOrder)
+        setStatus(nextOrder.status)
+        setLicenseKey(nextOrder.licenseKey ?? null)
+        setError(null)
+        setIsLoaded(true)
+        return nextOrder
+      } catch (err) {
+        if (!isActive) return null
+
+        setOrder(null)
+        setStatus(null)
+        setLicenseKey(null)
+        setError(err instanceof Error ? err.message : 'Failed to load order confirmation')
+        setIsLoaded(true)
+        return null
       }
-    }, POLL_INTERVAL_MS)
+    }
 
-    return () => clearInterval(interval)
-  }, [orderId, store])
+    setOrder(null)
+    setStatus(null)
+    setLicenseKey(null)
+    setError(null)
+    setIsLoaded(false)
 
-  return { order, status: store.orderStatus, licenseKey: store.licenseKey }
+    void syncOrder().then((initialOrder) => {
+      if (!initialOrder || initialOrder.status === 'FULFILLED' || initialOrder.status === 'FAILED') {
+        return
+      }
+
+      let attempts = 0
+      interval = setInterval(async () => {
+        attempts++
+        try {
+          const nextOrder = await api.getOrder(orderId)
+          if (!isActive) return
+
+          setOrder(nextOrder)
+          setStatus(nextOrder.status)
+          setLicenseKey(nextOrder.licenseKey ?? null)
+          setError(null)
+          if (nextOrder.status === 'FULFILLED' || nextOrder.status === 'FAILED' || attempts >= POLL_MAX_ATTEMPTS) {
+            clearInterval(interval)
+          }
+        } catch {
+          if (attempts >= POLL_MAX_ATTEMPTS && interval) clearInterval(interval)
+        }
+      }, POLL_INTERVAL_MS)
+    })
+
+    return () => {
+      isActive = false
+      if (interval) clearInterval(interval)
+    }
+  }, [orderId])
+
+  return { order, status, licenseKey, error, isLoaded }
 }
